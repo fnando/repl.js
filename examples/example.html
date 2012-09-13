@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="UTF-8">
+    <title>REPL</title>
+    <style type="text/css" media="screen">
+      * {
+        font: bold 14px/14px monospace;
+      }
+
+      input {
+        padding: 5px;
+        width: 500px;
+      }
+
+      .system {
+        color: #888;
+      }
+
+      span {
+        display: inline-block;
+        margin-right: 10px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <input id="prompt" autofocus>
+    <script type="text/javascript" src="jquery.js"></script>
+    <script type="text/javascript" src="../lib/jquery.cursor.js"></script>
+    <script type="text/javascript" src="../lib/jquery.keybind.js"></script>
+    <script type="text/javascript" src="../lib/repl.js"></script>
+    <script type="text/javascript">
+      function systemMessage(message) {
+        $("<pre class='system'/>")
+          .append("<span>=></span>")
+          .append(document.createTextNode(message))
+          .appendTo(document.body)
+        ;
+      }
+
+      systemMessage("Navigate history using arrow-up and arrow-down");
+      systemMessage("There are also some keybindings:");
+      systemMessage("Ctrl+A: move to beginning of line");
+      systemMessage("Ctrl+E: move to end of line");
+      systemMessage("Ctrl+F: move forward");
+      systemMessage("Ctrl+B: move backward");
+      systemMessage("Ctrl+K: delete to the end of line");
+      systemMessage("Ctrl+U: delete to the start of line");
+      systemMessage("Ctrl+W: delete word");
+
+      var repl = new REPL("#prompt");
+      repl.on("command", function(command, ready){
+        $("<pre/>")
+          .append("<span> &gt;</span>")
+          .append(document.createTextNode(command))
+          .appendTo(document.body)
+        ;
+
+        systemMessage("History size: " + repl.history.length);
+
+        if (command.match(/^hello$/)) {
+          repl.trigger("hello");
+        }
+
+        ready();
+      });
+
+      repl.on("hello", function(){
+        alert("You typed hello!");
+      });
+
+      repl.on("ready", function(){
+        systemMessage("The ready event was triggered!");
+      });
+
+    </script>
+  </body>
+</html>
